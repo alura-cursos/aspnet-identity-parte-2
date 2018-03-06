@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,23 @@ namespace ByteBank.Forum
 
                     return userManager;
                 });
+
+            builder.CreatePerOwinContext<SignInManager<UsuarioAplicacao, string>>(
+                (opcoes, contextoOwin) =>
+                {
+                    var userManager = contextoOwin.Get<UserManager<UsuarioAplicacao>>();
+                    var signInManager =
+                        new SignInManager<UsuarioAplicacao, string>(
+                            userManager,
+                            contextoOwin.Authentication);
+
+                    return signInManager;
+                });
+
+            builder.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie
+            });
         }
     }
 }
