@@ -186,6 +186,8 @@
     <Compile Include="Models\UsuarioAplicacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ContaConfirmacaoAlteracaoSenhaViewModel.cs" />
+    <Compile Include="ViewModels\ContaEsqueciSenhaViewModel.cs" />
     <Compile Include="ViewModels\ContaLoginViewModel.cs" />
     <Compile Include="ViewModels\ContaRegistrarViewModel.cs" />
     <Compile Include="ViewModels\TopicoCriarViewModel.cs" />
@@ -231,6 +233,9 @@
     <Content Include="Views\Conta\AguardandoConfirmacao.cshtml" />
     <Content Include="Views\Topico\Criar.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
+    <Content Include="Views\Conta\EsqueciSenha.cshtml" />
+    <Content Include="Views\Conta\EmailAlteracaoSenhaEnviado.cshtml" />
+    <Content Include="Views\Conta\ConfirmacaoAlteracaoSenha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

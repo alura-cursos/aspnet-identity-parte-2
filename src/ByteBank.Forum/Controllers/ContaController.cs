@@ -155,6 +155,13 @@ namespace ByteBank.Forum.Controllers
                 switch (signInResultado)
                 {
                     case SignInStatus.Success:
+
+                        if (!usuario.EmailConfirmed)
+                        {
+                            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                            return View("AguardandoConfirmacao");
+                        }
+
                         return RedirectToAction("Index", "Home");
                     case SignInStatus.LockedOut:
                         var senhaCorreta = 
@@ -174,6 +181,81 @@ namespace ByteBank.Forum.Controllers
 
             // Algo de errado aconteceu
             return View(modelo);
+        }
+
+        public ActionResult EsqueciSenha()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EsqueciSenha(ContaEsqueciSenhaViewModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                // Gerar o token de reset da senha
+                // Gerar a url para o usuário
+                // Vamos enviar esse email
+
+                var usuario = await UserManager.FindByEmailAsync(modelo.Email);
+
+                if (usuario != null)
+                {
+                    var token =
+                        await UserManager.GeneratePasswordResetTokenAsync(usuario.Id);
+
+                    var linkDeCallback =
+                        Url.Action(
+                            "ConfirmacaoAlteracaoSenha",
+                            "Conta",
+                            new { usuarioId = usuario.Id, token = token },
+                            Request.Url.Scheme);
+
+                    await UserManager.SendEmailAsync(
+                        usuario.Id,
+                        "Fórum ByteBank - Alteração de senha",
+                        $"Clique aqui {linkDeCallback} alterar a sua senha!");
+                }
+
+                return View("EmailAlteracaoSenhaEnviado");
+            }
+
+            return View();
+        }
+
+        public ActionResult ConfirmacaoAlteracaoSenha(string usuarioId, string token)
+        {
+            var modelo = new ContaConfirmacaoAlteracaoSenhaViewModel
+            {
+                UsuarioId = usuarioId,
+                Token = token
+            };
+
+            return View(modelo);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ConfirmacaoAlteracaoSenha(ContaConfirmacaoAlteracaoSenhaViewModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                // Verifica o Token recebido
+                // Verifica o ID do usuário
+                // Mudar a senha
+                var resultadoAlteracao = 
+                    await UserManager.ResetPasswordAsync(
+                        modelo.UsuarioId,
+                        modelo.Token,
+                        modelo.NovaSenha);
+
+                if (resultadoAlteracao.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                AdicionaErros(resultadoAlteracao);
+            }
+
+            return View();
         }
 
         [HttpPost]
