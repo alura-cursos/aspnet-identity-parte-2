@@ -103,6 +103,32 @@ namespace ByteBank.Forum.Controllers
                 return View("Error");
         }
         
+        public async Task<ActionResult> Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Login(ContaLoginViewModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                var usuario = await UserManager.FindByEmailAsync(modelo.Email);
+                if (usuario != null)
+                {
+                    // OPS, assim não, né?
+                    if (modelo.Senha == usuario.PasswordHash)
+                    {
+
+                    }
+                }
+                // Realizar login pelo Identity
+            }
+
+            // Algo de errado aconteceu
+            return View(modelo);
+        }
+
         private void AdicionaErros(IdentityResult resultado)
         {
             foreach (var erro in resultado.Errors)

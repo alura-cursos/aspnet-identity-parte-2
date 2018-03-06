@@ -1,0 +1,17 @@
+﻿@model ByteBank.Forum.ViewModels.TopicoCriarViewModel
+
+@{
+    ViewBag.Title = "Criar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Criar</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary("", new { @class="text-danger" })
+
+    @Html.EditorForModel()
+
+    <input type="submit" value="Criar Tópico" />
+}
